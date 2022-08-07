@@ -24,7 +24,7 @@
   --rootbg: url(../images/stars.png);
   --blendmode: screen;
   --alertbg: rgba(30,30,30,0.9);
-  --alertbg: linear-gradient(60deg,#4445,#2225);
+  --alertbg: linear-gradient(60deg,#4445,#1115);
 }
 
 *{
@@ -326,12 +326,30 @@ transform-rigin: (50%) for x-axis (hand_length-(hand_width/2)) for y-axis.
   transform: translateY(-110%);
 }
 .finishpopup i{
+  display: flex;
+  align-items: center;
   font-size: 1.3em;
   padding: 10px;
   cursor: pointer;
   margin-left: auto;
   text-shadow: none;
   color: var(--error);
+  position: relative;
+}
+.finishpopup i::after{
+  content: 'Dismiss';
+  position: absolute;
+  font-size: 0.7em;
+  color: var(--fadetext1);
+  font-weight: 400;
+  opacity: 0;
+  transform: translateX(-50%);
+  font-family: var(--ftext);
+  transition: 0.3s ease-in-out;
+}
+.finishpopup i:hover::after{
+  opacity: 1;
+  transform: translateX(-120%);
 }
 .finishpopup .nums{
   font-family: var(--fnumber) !important;
@@ -588,7 +606,12 @@ transform-rigin: (50%) for x-axis (hand_length-(hand_width/2)) for y-axis.
   font-size: 0.85em;
 }
 #aboutmain #abttext span{color: var(--fadetext1)}
-#aboutmain #social{gap: 0.3em; margin-top: 1em;}
+#aboutmain #social{
+  gap: 0.3em;
+  border-top: 1px solid var(--fadetext3);
+  padding-top: 1em;
+  margin: 2em 0 -0.5em -0.3em;
+}
 #aboutmain #social a{
   color: var(--fadetext2);
   padding: 0.3em;
@@ -896,6 +919,9 @@ transform-rigin: (50%) for x-axis (hand_length-(hand_width/2)) for y-axis.
 
   /* TIMER */
   #timermain .buttons{margin: 60px 0 0 0;}
+
+  /* ABOUT */
+  #aboutmain{max-width: unset;}
 }
 @media (min-aspect-ratio:12/6) and (min-width: 900px) and (max-height: 600px){
   .popup{justify-content: flex-start; padding: 20px 0; overflow: scroll;}
