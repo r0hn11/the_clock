@@ -9,6 +9,6 @@ Brief-
 -In the settings part, you can change accent colour (which is colour of IST clock) and GMT+1 clock colour. Also type of display clock can be changed. Reloading page will not reset any value.
 
 About the code-
-Seperate components are seperated in different.js files and imported as a module inside index.js
+Seperate components are seperated in different.js files under js/modules folder and imported as a module inside index.js
 app.js handles all the functioning of application.
 I have tried to implement a React-like structure by using seperate modules and components.
