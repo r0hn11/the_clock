@@ -1,7 +1,7 @@
 # the_clock
 
 Brief-
--This project shows a 24 hours clock according to 2 time zones, IST (Indian standard time) and GMT+1 (Greenwich mean time1+1 / London).
+-This project shows a 24 hours clock according to 2 time zones, IST (Indian standard time) and GMT+1 (Greenwich mean time1+1 / London).\n
 -Other parts of project contains alarms, stopwatch and timer. You can add upto 3 alarms in one browser. 
 -The data is stored on the localstorage of browswer itself hence alarms will not be copied across different browsers or devices.
 -Alarms can be set in 24 hour format using up and down navigation buttons in the popup. Current time will be copied to the setter if clicked on current time inside the popup.
