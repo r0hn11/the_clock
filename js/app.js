@@ -3,8 +3,8 @@ import {Navigation, AnalogClock, DigitalClock, Alarms, Stopwatch, Timer, Setting
 if(!errorStat.includes(-1)){
 
   const music = {
-    spiritedAway: new Audio('https://r0hn11.github.io/the_clock/audio/spiritedAway.mp3'),
-    alarm: new Audio('https://r0hn11.github.io/the_clock/audio/alarm2.mp3')
+    spiritedAway: new Audio('../audio/spiritedAway.mp3'),
+    alarm: new Audio('../audio/alarm2.mp3')
   }
 
   const istobj = {
@@ -36,10 +36,13 @@ if(!errorStat.includes(-1)){
     ring:function(hh,mm,n){
       Alarms.hideme();
       Settings.hideme();
+      About.hideme();
       Navigation.showme2();
-      closemenu();
       if(!timerobj.par.classList.contains('minimized')) Timer.hideme();
+      else Timer.showme();
       if(!stopwatchobj.par.classList.contains('minimized')) Stopwatch.hideme();
+      else Stopwatch.showme();
+      closemenu();
       let ringpopup = document.getElementById('alarmRing');
       let ringmsg = document.querySelector('#alarmRing span');
       let ringclose = document.querySelector('#alarmRing i');
@@ -430,6 +433,7 @@ if(!errorStat.includes(-1)){
             Timer.hideme();
             Alarms.hideme();
             Settings.hideme();
+            About.hideme();
             if(!stopwatchobj.par.classList.contains('minimized')) Stopwatch.hideme();
             clearInterval(this.int1);
             this.finishPopup();
@@ -1250,8 +1254,9 @@ if(!errorStat.includes(-1)){
     if(!stopwatchobj.par.classList.contains('hidden')) swvis=1;
     if(!timerobj.par.classList.contains('hidden')) tmvis=1;
     Alarms.hideme();
-    Stopwatch.hideme()
-    Timer.hideme()
+    Stopwatch.hideme();
+    Timer.hideme();
+    About.hideme();
     closemenu();
     Settings.showme();
 
