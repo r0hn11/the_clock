@@ -3,8 +3,8 @@ import {Navigation, AnalogClock, DigitalClock, Alarms, Stopwatch, Timer, Setting
 if(!errorStat.includes(-1)){
 
   const music = {
-    spiritedAway: new Audio('../audio/spiritedAway.mp3'),
-    alarm: new Audio('../audio/alarm2.mp3')
+    spiritedAway: new Audio('https://r0hn11.github.io/the_clock/audio//spiritedAway.mp3'),
+    alarm: new Audio('https://r0hn11.github.io/the_clock/audio//alarm2.mp3')
   }
 
   const istobj = {
