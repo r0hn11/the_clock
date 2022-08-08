@@ -670,6 +670,7 @@ if(!errorStat.includes(-1)){
         document.documentElement.style.setProperty('--accent1', '#'+c1);
         document.documentElement.style.setProperty('--accent2', '#'+c2);
       }
+      Settings.hideme();
     },
     resetChanges: function(){
       localStorage.setItem("accent1",'33998F');
@@ -1293,7 +1294,10 @@ if(!errorStat.includes(-1)){
       }
     }
     settingsobj.buttons.save.onclick=()=>{
+      Navigation.showme2();
       settingsobj.saveChanges();
+      if(stopwatchobj.par.classList.contains('minimized')){Stopwatch.showme();}
+      if(timerobj.par.classList.contains('minimized')){Timer.showme();}
     }
     settingsobj.buttons.reset.onclick=()=>{
       settingsobj.resetChanges();
