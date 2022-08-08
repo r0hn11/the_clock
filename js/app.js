@@ -3,8 +3,8 @@ import {Navigation, AnalogClock, DigitalClock, Alarms, Stopwatch, Timer, Setting
 if(!errorStat.includes(-1)){
 
   const music = {
-    spiritedAway: new Audio('..https://r0hn11.github.io/the_clock/audio/spiritedAway.mp3'),
-    alarm: new Audio('..https://r0hn11.github.io/the_clock/audio/alarm2.mp3')
+    spiritedAway: new Audio('https://r0hn11.github.io/the_clock/audio/spiritedAway.mp3'),
+    alarm: new Audio('https://r0hn11.github.io/the_clock/audio/alarm2.mp3')
   }
 
   const istobj = {
@@ -38,10 +38,18 @@ if(!errorStat.includes(-1)){
       Settings.hideme();
       About.hideme();
       Navigation.showme2();
-      if(!timerobj.par.classList.contains('minimized')) Timer.hideme();
-      else Timer.showme();
-      if(!stopwatchobj.par.classList.contains('minimized')) Stopwatch.hideme();
-      else Stopwatch.showme();
+      if(!stopwatchobj.par.classList.contains('hidden') && !stopwatchobj.buttons.pause.classList.contains('hidden')){
+        stopwatchobj.par.classList.add('minimized');
+        Stopwatch.showme();
+      }
+      else if(stopwatchobj.par.classList.contains('minimized')){Stopwatch.showme();}
+      else{Stopwatch.hideme();}
+      if(!timerobj.par.classList.contains('hidden') && !timerobj.buttons.pause.classList.contains('hidden')){
+        timerobj.par.classList.add('minimized');
+        Timer.showme();
+      }
+      else if(timerobj.par.classList.contains('minimized')){Timer.showme();}
+      else{Timer.hideme();}
       closemenu();
       let ringpopup = document.getElementById('alarmRing');
       let ringmsg = document.querySelector('#alarmRing span');
@@ -66,6 +74,7 @@ if(!errorStat.includes(-1)){
           localStorage.setItem('alarm3stat','0');
           this.upcomingAlarms.buttons.b3.classList.remove('toggle-on');
         }
+        this.fetchAlarm();
       },180000)
       ringclose.onclick = ()=>{
         music.alarm.pause();
@@ -75,6 +84,7 @@ if(!errorStat.includes(-1)){
         if(n==1) localStorage.setItem('alarm1stat','0');
         else if(n==2) localStorage.setItem('alarm2stat','0');
         else if(n==3) localStorage.setItem('alarm3stat','0');
+        this.fetchAlarm();
       }
     },
     stopring:function(){
@@ -430,11 +440,17 @@ if(!errorStat.includes(-1)){
         },700)
         this.int1 = setInterval(()=>{
           if(hh===0 && mm===0 && ss===1){
+            Navigation.showme2();
             Timer.hideme();
             Alarms.hideme();
             Settings.hideme();
             About.hideme();
-            if(!stopwatchobj.par.classList.contains('minimized')) Stopwatch.hideme();
+            if(!stopwatchobj.par.classList.contains('hidden') && !stopwatchobj.buttons.pause.classList.contains('hidden')){
+              stopwatchobj.par.classList.add('minimized');
+              Stopwatch.showme();
+            }
+            else if(stopwatchobj.par.classList.contains('minimized')){Stopwatch.showme();}
+            else{Stopwatch.hideme();}
             clearInterval(this.int1);
             this.finishPopup();
             try{music.spiritedAway.play();}
@@ -1305,6 +1321,7 @@ if(!errorStat.includes(-1)){
       if(timerobj.par.classList.contains('minimized')){Timer.showme();}
     }
   }
+
 
 }
 else if(errorStat===0){
