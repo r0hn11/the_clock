@@ -3,8 +3,8 @@ import {Navigation, AnalogClock, DigitalClock, Alarms, Stopwatch, Timer, Setting
 if(!errorStat.includes(-1)){
 
   const music = {
-    spiritedAway: new Audio('https://r0hn11.github.io/the_clock/audio/spiritedAway.mp3'),
-    alarm: new Audio('https://r0hn11.github.io/the_clock/audio/alarm2.mp3')
+    spiritedAway: new Audio('../audio/spiritedAway.mp3'),
+    alarm: new Audio('../audio/alarm2.mp3')
   }
 
   const istobj = {
@@ -732,11 +732,18 @@ if(!errorStat.includes(-1)){
   let zone;
   setInterval(()=>{
 
-    let date = new Date();
+    let defdate = new Date().toUTCString();
+    let date2 = new Date(`${defdate.slice(0,defdate.indexOf('GMT'))}`);
+    let dh = date2.getHours()+5;
+    let dm = date2.getMinutes()+30;
+    let ds = date2.getSeconds();
+    date2.setHours(dh);
+    date2.setMinutes(dm);
+    date2.setSeconds(ds);
 
-    let hh = date.getHours();
-    let mm = date.getMinutes();
-    let ss = date.getSeconds();
+    let hh = date2.getHours();
+    let mm = date2.getMinutes();
+    let ss = date2.getSeconds();
 
     istobj.analog.hh.style.transform = `rotate(${(hh*360/12)+(mm/2)}deg)`;
     istobj.analog.mm.style.transform = `rotate(${(mm*360/60)+(ss/10)}deg)`;
