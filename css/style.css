@@ -79,7 +79,7 @@ body{
   position: fixed;
   top: 0;
   left: 0;
-  transition: 0.7s cubic-bezier(.23,1.55,.5,1.58);
+  transition: 0.7s cubic-bezier(0, 0.71, 0, 1.37);
   z-index: 1000;
   pointer-events: none;
 }
