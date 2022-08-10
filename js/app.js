@@ -38,13 +38,19 @@ if(!errorStat.includes(-1)){
       Settings.hideme();
       About.hideme();
       Navigation.showme2();
-      if(!stopwatchobj.par.classList.contains('hidden') && !stopwatchobj.buttons.pause.classList.contains('hidden')){
+      if(
+        !stopwatchobj.par.classList.contains('hidden') &&
+        (stopwatchobj.numbers.swhh.innerHTML!='00' || stopwatchobj.numbers.swmm.innerHTML!='00' || stopwatchobj.numbers.swss.innerHTML!='00' || stopwatchobj.numbers.swms.innerHTML!='000')
+      ){
         stopwatchobj.par.classList.add('minimized');
         Stopwatch.showme();
       }
       else if(stopwatchobj.par.classList.contains('minimized')){Stopwatch.showme();}
       else{Stopwatch.hideme();}
-      if(!timerobj.par.classList.contains('hidden') && !timerobj.buttons.pause.classList.contains('hidden')){
+      if(
+        !timerobj.par.classList.contains('hidden') &&
+        (timerobj.numbers.hh.innerHTML!='00' || timerobj.numbers.mm.innerHTML!='00' || timerobj.numbers.ss.innerHTML!='00')
+      ){
         timerobj.par.classList.add('minimized');
         Timer.showme();
       }
@@ -279,84 +285,167 @@ if(!errorStat.includes(-1)){
 
   const stopwatchobj = {
     par: document.getElementById('stopwatchpopup'),
+    numspar: document.getElementById('stopwatchNum'),
     int1:setInterval(()=>{}),
+    int2:setInterval(()=>{}),
     numbers:{
       swhh: document.getElementById('swhh'),
       swmm: document.getElementById('swmm'),
       swss: document.getElementById('swss'),
       swms: document.getElementById('swms')
     },
+    laps:{
+      par: document.getElementById("laps"),
+      warn: document.getElementById("minlapswarn")
+    },
     buttons:{
       play: document.getElementById('playsw'),
       pause: document.getElementById('pausesw'),
       reset: document.getElementById('resetsw'),
+      lap: document.getElementById('lapsw'),
       cancel: document.getElementById('cancelsw'),
       minmax: document.getElementById('minsw'),
       switch: document.getElementById('stopwatchswitch')
     },
     playStopwatch:function(){
+      this.numspar.style.animation = '';
       this.buttons.play.style.opacity = '0';
+      this.buttons.reset.style.opacity = '0';
       this.buttons.cancel.style.opacity = '0';
       setTimeout(()=>{
+        this.buttons.lap.style.opacity = '1'
         this.buttons.pause.style.opacity = '1'
-        this.buttons.reset.style.opacity = '1'
         this.buttons.play.classList.add('hidden');
         this.buttons.cancel.classList.add('hidden');
+        this.buttons.reset.classList.add('hidden');
+        this.buttons.lap.classList.remove('hidden');
         this.buttons.pause.classList.remove('hidden');
-        this.buttons.reset.classList.remove('hidden');
       },700)
+      let msr;
+      let ms = parseInt(this.numbers.swms.innerHTML);
       let ss = parseInt(this.numbers.swss.innerHTML);
       let mm = parseInt(this.numbers.swmm.innerHTML);
       let hh = parseInt(this.numbers.swhh.innerHTML);
+
       this.int1 = setInterval(()=>{
-        ss++;
-        if(ss>=59){
-          ss=0;
-          mm++;
-          if(mm>=59){
-            mm=0;
-            hh++;
+        ms+=10;
+        if(ms%1000===0){
+          ms=0;
+          ss++;
+          if(ss%60===0){
+            ss=0;
+            mm++;
+            if(mm%60===0){
+              mm=0;
+              hh++;
+            }
           }
         }
         (hh<=9)?(this.numbers.swhh.innerHTML='0'+hh):(this.numbers.swhh.innerHTML=hh);
         (mm<=9)?(this.numbers.swmm.innerHTML='0'+mm):(this.numbers.swmm.innerHTML=mm);
         (ss<=9)?(this.numbers.swss.innerHTML='0'+ss):(this.numbers.swss.innerHTML=ss);
-      },1000)
+        let msstr;
+        if(ms<=9)(msstr='00'+ms);
+        else if(ms<=99)(msstr='0'+ms);
+        else (msstr=''+ms);
+        this.numbers.swms.innerHTML = msstr;
+      },10)
+
     },
     pauseStopwatch:function(){
+      this.numspar.style.animation = 'blink 1s infinite linear alternate'
       clearInterval(this.int1);
+      clearInterval(this.int2);
       this.buttons.pause.style.opacity = '0'
-      this.buttons.reset.style.opacity = '0'
+      this.buttons.lap.style.opacity = '0'
       setTimeout(()=>{
         this.buttons.play.style.opacity = '1'
+        this.buttons.reset.style.opacity = '1'
         this.buttons.cancel.style.opacity = '1'
         this.buttons.pause.classList.add('hidden');
-        this.buttons.reset.classList.add('hidden');
+        this.buttons.lap.classList.add('hidden');
         this.buttons.play.classList.remove('hidden');
+        this.buttons.reset.classList.remove('hidden');
         this.buttons.cancel.classList.remove('hidden');
       },500)
     },
+    lapStopwatch: function(){
+      document.getElementById('o1').style.display = 'block';
+      document.getElementById('o2').style.display = 'block';
+      if(!this.par.classList.contains('minimized')) this.laps.par.style.display = 'flex';
+      else{
+        this.laps.warn.classList.add('popfast');
+        setTimeout(()=>{
+          this.laps.warn.classList.remove('popfast');
+        },4000)
+      }
+      this.laps.par.scrollTop = -this.laps.par.scrollHeight;
+      let lap = document.createElement('p');
+      let n = this.laps.par.childElementCount+1;
+      let ns;
+      (n<=9 && n>=0)?ns='0'+n:ns=n;
+      let mmdif, ssdif, msdif;
+      if(this.laps.par.childElementCount>0){
+        let prestr = this.laps.par.lastChild.innerText;
+        let mscur = parseInt(this.numbers.swms.innerHTML);
+        let sscur = parseInt(this.numbers.swss.innerHTML);
+        let mmcur = parseInt(this.numbers.swmm.innerHTML);
+        let mspre = parseInt(prestr.slice(prestr.lastIndexOf('.')+1,));
+        let sspre = parseInt(prestr.slice(prestr.lastIndexOf('.')-2,prestr.lastIndexOf('.')));
+        let mmpre = parseInt(prestr.slice(prestr.lastIndexOf('.')-5,prestr.lastIndexOf('.')-3));
+        mmdif = mmcur-mmpre;
+        ssdif = sscur-sspre;
+        msdif = mscur-mspre;
+        if(msdif<0){ssdif--; msdif+=1000;}
+        if(ssdif<0){mmdif--; ssdif+=60;}
+      }
+      else{
+        msdif = parseInt(this.numbers.swms.innerHTML);
+        ssdif = parseInt(this.numbers.swss.innerHTML);
+        mmdif = parseInt(this.numbers.swmm.innerHTML);
+      }
+      if(msdif<=9) msdif='00'+msdif;
+      else if(msdif<=99) msdif='0'+msdif;
+      else msdif=msdif;
+      if(ssdif<=9) ssdif='0'+ssdif;
+      if(mmdif<=9) mmdif='0'+mmdif;
+      lap.innerHTML = `
+      #${ns}&ensp;
+      ${mmdif}.${ssdif}.${msdif}&ensp;
+      ${this.numbers.swmm.innerHTML}.${this.numbers.swss.innerHTML}.${this.numbers.swms.innerHTML}`
+      this.laps.par.appendChild(lap)
+    },
     resetStopwatch:function(){
+      this.numspar.style.animation = '';
+      this.laps.par.innerHTML = '';
+      this.laps.par.style.display = 'none';
       clearInterval(this.int1);
       this.buttons.reset.style.animation = 'rot 1s ease-in-out 1 forwards';
       setTimeout(()=>{this.buttons.reset.style.animation = ''},1500)
+      this.numbers.swms.innerHTML = '00';
       this.numbers.swss.innerHTML = '00';
       this.numbers.swmm.innerHTML = '00';
       this.numbers.swhh.innerHTML = '00';
-      this.playStopwatch();
+      this.numbers.swms.innerHTML = '00';
     },
     cancelStopwatch: function(){
       Stopwatch.hideme();
+      this.numspar.style.animation = '';
+      this.laps.par.innerHTML = '';
+      this.laps.par.style.display = 'none';
       this.numbers.swss.innerHTML = '00';
       this.numbers.swmm.innerHTML = '00';
       this.numbers.swhh.innerHTML = '00';
+      this.numbers.swms.innerHTML = '00';
       setTimeout(()=>{this.par.classList.remove('minimized');},500)
     },
     minmaxStopwarch: function(){
       if(this.par.classList.contains('minimized')){
+        this.laps.par.style.display = 'flex';
         this.par.classList.remove('minimized');
       }
       else{
+        this.laps.par.style.display = 'none';
         this.par.classList.add('minimized');
       }
     },
@@ -408,6 +497,8 @@ if(!errorStat.includes(-1)){
       play: document.getElementById('playtm'),
       cancel: document.getElementById('canceltm'),
       pause: document.getElementById('pausetm'),
+      plus: document.getElementById('plustm'),
+      minus: document.getElementById('minustm'),
       reset: document.getElementById('resettm'),
       switch: document.getElementById('timerswitch')
     },
@@ -418,6 +509,7 @@ if(!errorStat.includes(-1)){
       if(mm>0 || hh>0 || ss>0){
         this.buttons.play.style.opacity = '0';
         this.buttons.cancel.style.opacity = '0';
+        this.buttons.reset.style.opacity = '0';
         setTimeout(()=>{
           this.buttons.changers.hhplus.style.opacity = '0';
           this.buttons.changers.mmplus.style.opacity = '0';
@@ -431,21 +523,30 @@ if(!errorStat.includes(-1)){
             this.buttons.changers.mmminus.classList.add('hidden');
           },200)
 
+          this.buttons.plus.style.opacity = '1';
+          this.buttons.minus.style.opacity = '1';
           this.buttons.pause.style.opacity = '1';
-          this.buttons.reset.style.opacity = '1';
           this.buttons.play.classList.add('hidden');
+          this.buttons.reset.classList.add('hidden');
           this.buttons.cancel.classList.add('hidden');
           this.buttons.pause.classList.remove('hidden');
-          this.buttons.reset.classList.remove('hidden');
+          this.buttons.plus.classList.remove('hidden');
+          this.buttons.minus.classList.remove('hidden');
         },700)
         this.int1 = setInterval(()=>{
+          hh = parseInt(this.numbers.hh.innerHTML);
+          mm = parseInt(this.numbers.mm.innerHTML);
+          ss = parseInt(this.numbers.ss.innerHTML);
           if(hh===0 && mm===0 && ss===1){
             Navigation.showme2();
             Timer.hideme();
             Alarms.hideme();
             Settings.hideme();
             About.hideme();
-            if(!stopwatchobj.par.classList.contains('hidden') && !stopwatchobj.buttons.pause.classList.contains('hidden')){
+            if(
+              !stopwatchobj.par.classList.contains('hidden') &&
+              (stopwatchobj.numbers.swhh.innerHTML!='00' || stopwatchobj.numbers.swmm.innerHTML!='00' || stopwatchobj.numbers.swss.innerHTML!='00' || stopwatchobj.numbers.swms.innerHTML!='000')
+            ){
               stopwatchobj.par.classList.add('minimized');
               Stopwatch.showme();
             }
@@ -460,7 +561,8 @@ if(!errorStat.includes(-1)){
               this.alert.innerHTML = 'Unable to play audio';
             }
             this.buttons.pause.style.opacity = '0';
-            this.buttons.reset.style.opacity = '0';
+            this.buttons.plus.style.opacity = '0';
+            this.buttons.minus.style.opacity = '0';
             setTimeout(()=>{
               this.numbers.ss.innerHTML = '00';
               this.numbers.mm.innerHTML = '00';
@@ -479,11 +581,14 @@ if(!errorStat.includes(-1)){
               },200)
 
               this.buttons.play.style.opacity = '1';
+              this.buttons.reset.style.opacity = '1';
               this.buttons.cancel.style.opacity = '1';
               this.buttons.play.classList.remove('hidden');
               this.buttons.cancel.classList.remove('hidden');
+              this.buttons.reset.classList.remove('hidden');
               this.buttons.pause.classList.add('hidden');
-              this.buttons.reset.classList.add('hidden');
+              this.buttons.plus.classList.add('hidden');
+              this.buttons.minus.classList.add('hidden');
             },700)
           }
           ss--;
@@ -524,13 +629,17 @@ if(!errorStat.includes(-1)){
     pauseTimer:function(){
       clearInterval(this.int1);
       this.buttons.pause.style.opacity = '0';
-      this.buttons.reset.style.opacity = '0';
+      this.buttons.plus.style.opacity = '0';
+      this.buttons.minus.style.opacity = '0';
       setTimeout(()=>{
         this.buttons.play.style.opacity = '1';
         this.buttons.cancel.style.opacity = '1';
+        this.buttons.reset.style.opacity = '1';
         this.buttons.pause.classList.add('hidden');
-        this.buttons.reset.classList.add('hidden');
+        this.buttons.plus.classList.add('hidden');
+        this.buttons.minus.classList.add('hidden');
         this.buttons.play.classList.remove('hidden');
+        this.buttons.reset.classList.remove('hidden');
         this.buttons.cancel.classList.remove('hidden');
       },700)
     },
@@ -551,6 +660,57 @@ if(!errorStat.includes(-1)){
       this.numbers.ss.innerHTML = '00';
       this.numbers.mm.innerHTML = '00';
       this.numbers.hh.innerHTML = '00';
+    },
+    plusone: function(){
+      let hh = parseInt(this.numbers.hh.innerHTML);
+      let mm = parseInt(this.numbers.mm.innerHTML);
+      let ss = parseInt(this.numbers.ss.innerHTML);
+      if(mm<59 && hh<10){
+        mm++;
+      }
+      else if(mm>=59){
+        mm=0;
+        hh++;
+        if(hh>=10){
+          hh=10;
+          mm=0;
+          ss=0;
+        }
+      }
+      else{
+        ss=0,mm=0,hh=10;
+        this.numbers.ss.innerHTML = '00';
+      }
+      (ss<=9)?this.numbers.ss.innerHTML = '0'+ss:this.numbers.ss.innerHTML = ss;
+      (mm<=9)?this.numbers.mm.innerHTML = '0'+mm:this.numbers.mm.innerHTML = mm;
+      (hh<=9)?this.numbers.hh.innerHTML = '0'+hh:this.numbers.hh.innerHTML = hh;
+    },
+    minusone: function(){
+      let hh = parseInt(this.numbers.hh.innerHTML);
+      let mm = parseInt(this.numbers.mm.innerHTML);
+      let ss = parseInt(this.numbers.ss.innerHTML);
+
+      if(mm===0 && hh===0){
+        ss=0;
+        this.resetTimer();
+      }
+      else if(mm>=0 && hh>0){
+        mm--;
+        if(mm<0){
+          mm=59;
+          hh--;
+        }
+      }
+      else if(mm>=0 && hh===0){
+        mm--;
+        if(mm<0){
+          mm=0;
+        }
+      }
+
+      (ss<=9)?this.numbers.ss.innerHTML = '0'+ss:this.numbers.ss.innerHTML = ss;
+      (mm<=9)?this.numbers.mm.innerHTML = '0'+mm:this.numbers.mm.innerHTML = mm;
+      (hh<=9)?this.numbers.hh.innerHTML = '0'+hh:this.numbers.hh.innerHTML = hh;
     },
     cancelTimer: function(){
       Timer.hideme();
@@ -1120,6 +1280,7 @@ if(!errorStat.includes(-1)){
 
   /* Stopwatch */
   stopwatch.onclick=()=>{
+    if(stopwatchobj.laps.par.childElementCount===0){stopwatchobj.laps.par.style.display = 'none'}
     if(window.innerWidth<=600 && !stopwatchobj.par.classList.contains('minimized')){Navigation.hideme2();}
     Stopwatch.showme();
     if(!stopwatchobj.par.classList.contains('minimized')){Timer.hideme();}
@@ -1131,6 +1292,7 @@ if(!errorStat.includes(-1)){
     // buttons
     stopwatchobj.buttons.play.onclick=()=>{stopwatchobj.playStopwatch();}
     stopwatchobj.buttons.pause.onclick=()=>{stopwatchobj.pauseStopwatch();}
+    stopwatchobj.buttons.lap.onclick=()=>{stopwatchobj.lapStopwatch();}
     stopwatchobj.buttons.reset.onclick=()=>{stopwatchobj.resetStopwatch();}
     stopwatchobj.buttons.cancel.onclick=()=>{
       Navigation.showme2();
@@ -1172,9 +1334,12 @@ if(!errorStat.includes(-1)){
       if(parseInt(timerobj.numbers.hh.innerHTML)<9){
         timerobj.numbers.hh.innerHTML = '0'+(parseInt(timerobj.numbers.hh.innerHTML)+1);
       }
-      else if(parseInt(timerobj.numbers.hh.innerHTML)===10){}
       else{
         timerobj.numbers.hh.innerHTML = parseInt(timerobj.numbers.hh.innerHTML)+1;
+        if(parseInt(timerobj.numbers.hh.innerHTML)>9){
+          timerobj.numbers.mm.innerHTML = '00';
+          timerobj.numbers.hh.innerHTML = '10';
+        }
       }
     }
 
@@ -1195,17 +1360,20 @@ if(!errorStat.includes(-1)){
         timerobj.numbers.mm.innerHTML = '0'+(parseInt(timerobj.numbers.mm.innerHTML)+1);
       }
       else{
-        timerobj.numbers.mm.innerHTML = parseInt(timerobj.numbers.mm.innerHTML)+1;
-        if(parseInt(timerobj.numbers.mm.innerHTML)>59){
+          timerobj.numbers.mm.innerHTML = parseInt(timerobj.numbers.mm.innerHTML)+1;
+          if(parseInt(timerobj.numbers.mm.innerHTML)>59){
           timerobj.numbers.mm.innerHTML = '00';
           let hhcross = parseInt(timerobj.numbers.hh.innerHTML)+1;
           if(hhcross<=9){
             timerobj.numbers.hh.innerHTML='0'+hhcross;
           }else{
-            if(hhcross>10){timerobj.numbers.hh.innerHTML='10';}
+            if(hhcross>10){timerobj.numbers.hh.innerHTML='10'; timerobj.numbers.mm.innerHTML='00'}
             else{timerobj.numbers.hh.innerHTML=hhcross;}
           }
         }
+      }
+      if(parseInt(timerobj.numbers.hh.innerHTML)===10){
+        timerobj.numbers.mm.innerHTML = '00';
       }
     }
 
@@ -1235,6 +1403,8 @@ if(!errorStat.includes(-1)){
     // buttons
     timerobj.buttons.play.onclick=()=>{timerobj.playTimer();}
     timerobj.buttons.pause.onclick=()=>{timerobj.pauseTimer();}
+    timerobj.buttons.plus.onclick=()=>{timerobj.plusone();}
+    timerobj.buttons.minus.onclick=()=>{timerobj.minusone();}
     timerobj.buttons.reset.onclick=()=>{
       timerobj.resetTimer();
       Stopwatch.hideme();

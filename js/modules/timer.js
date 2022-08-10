@@ -23,9 +23,11 @@ let txt =
     </div>
     <div class="buttons flex-row aic jcc w100">
       <div id="playtm" class="pri btn flex-row jcc aic"><i class="fa-solid fa-play"></i></div>
+      <div id="resettm" class="sec btn flex-row jcc aic"><i class="fa-solid fa-clock-rotate-left"></i></div>
       <div id="canceltm" class="sec btn flex-row jcc aic"><i class="fa-solid fa-xmark"></i></div>
       <div id="pausetm" class="pri hidden btn flex-row jcc aic"><i class="fa-solid fa-pause"></i></div>
-      <div id="resettm" class="sec hidden btn flex-row jcc aic"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div id="plustm" class="sec hidden btn flex-row jcc aic"><p>+1</p></div>
+      <div id="minustm" class="sec hidden btn flex-row jcc aic"><p>-1</p></div>
     </div>
   </div>
   <div id="warntimer">Add a timer.</div>
