@@ -899,6 +899,7 @@ transform-rigin: (50%) for x-axis (hand_length-(hand_width/2)) for y-axis.
   .clock{gap: 0px;}
   .clockface{transform: scale(0.6);}
   .clockfacedg{transform: scale(1);}
+  .minimized .nums{font-size: 0.8em;}
 }
 @media (min-aspect-ratio:8/6) and (max-width: 900px){
   .pop{animation: pop2 3s ease-in-out 1 forwards;}
