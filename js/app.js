@@ -436,7 +436,7 @@ if(!errorStat.includes(-1)){
       this.numbers.swss.innerHTML = '00';
       this.numbers.swmm.innerHTML = '00';
       this.numbers.swhh.innerHTML = '00';
-      this.numbers.swms.innerHTML = '00';
+      this.numbers.swms.innerHTML = '000';
       setTimeout(()=>{this.par.classList.remove('minimized');},500)
     },
     minmaxStopwarch: function(){
